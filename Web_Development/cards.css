@@ -1,0 +1,160 @@
+body {
+  padding-bottom: 1rem;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.card-container {
+  perspective: 1000px;
+    box-shadow: 5px 5p 15px black;
+}
+
+.card {
+  min-height: 17rem;
+  min-width: 13rem;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+  margin: auto;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 5px 5p 15px black;
+}
+
+span{
+  font-family: Cinzel Decorative;
+}
+
+.card img {
+  height: 9rem;
+  width: 9rem;
+  border-radius: 50%;
+}
+
+.front,
+.back {
+  width: 13rem;
+  height: 17rem;
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+  overflow: auto;
+  padding: 0.5rem;
+  /* border: 2px solid black ; */
+  box-shadow: 5px 5p 15px black;
+}
+
+.front {
+  transition-property: all;
+  transform: rotateY(0deg);
+  background-color: white;
+  text-align: center;
+  background: linear-gradient(145deg, #b9ffff, #fafafa, #ffe8ff);
+}
+
+.back {
+  transform: rotateY(180deg);
+  text-align: center;
+  border: 2px solid black;
+  /* background: linear-gradient(145deg, #FF7200,#FFFFFF,#FFFFFF,#009E09); */
+}
+
+.card-container:hover .card {
+  transform: rotateY(180deg);
+}
+
+.card a {
+  text-decoration: none;
+  color: blue;
+  font-weight: 600;
+  text-align: left;
+  align-self: start;
+  display: block;
+  margin-left: 0.6rem;
+  margin-top: 0.9rem;
+  font-size: 1rem;
+}
+
+.card p {
+  font-size: 1.24rem;
+  color: darkgrey;
+  font-family: Great Vibes;
+}
+
+.card h1 {
+  color: brown;
+  line-height: 1.8rem;
+  font-family: Cinzel Decorative;
+  font-size: 1.3rem;
+  margin-top: 1rem;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+#feature heading {
+  font-size: 1rem;
+}
+
+#cardparagraph {
+  font-size: 1.18rem;
+}
+
+#cardlink {
+  margin-top: 0.8rem;
+  margin-left: 0.5rem;
+}
+
+a:hover {
+  color: red;
+}
+
+a:active {
+  color: yellow;
+}
+
+#assetparagraph {
+    font-size: 1.24rem;
+}
+
+@media only screen and (min-width: 899px) {
+  .main-container {
+    display: flex;
+    flex-direction: row;
+    gap: 4rem;
+    justify-content: center;
+  }
+
+  .back a {
+    font-weight: 700;
+    margin-top: 0.04rem;
+    margin-left: 0.6rem;
+  }
+
+  .back p {
+    font-size: 1.15rem;
+  }
+
+  #cardparagraph {
+    font-size: 1.108rem;
+  }
+
+  #cardlink {
+    margin-top: 0.3rem;
+    margin-left: 0.5rem;
+  }
+
+  #assetparagraph{
+    font-size: 1.15rem;
+  }
+}

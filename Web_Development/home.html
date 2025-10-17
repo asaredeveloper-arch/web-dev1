@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Great+Vibes&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #cdd7de;
+    }
+
+    p {
+      color: white;
+      font-size: 1.1rem;
+      color: rgb(56, 56, 56);
+      padding: 0.5rem 1rem 0.5rem 1rem;
+      border-radius: 10px;
+      background-color: #fff1e2;
+      border-left: 5px solid #ffa280;
+      border-right: 5px solid #ff936c;
+      text-align: center;
+      max-width: 340px;
+      margin-bottom: 1rem;
+    }
+
+    .main {
+      background-color: #ffffff;
+      max-width: 380px;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin: 0.5rem auto;
+      border-radius: 10px;
+      margin-top: 0.5rem;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-direction: column;
+      align-items: stretch;
+      width: 90vw;
+      padding: 1rem;
+      border: 2px solid orangered;
+      border-radius: 19px;
+      background-color: #ffe5c5;
+      max-width: 334px;
+      margin: 1rem auto;
+    }
+
+    .box {
+      color: white;
+      background: linear-gradient(90deg, #ff7b00, red, #ff7300);
+      text-align: center;
+      padding: 5px;
+      font-size: 1.2rem;
+      border-radius: 50px;
+      transition: all 0.2s;
+      font-family: cinzel decorative;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .box:hover {
+      transform: translateY(-2px);
+      box-shadow: 5px 5px 25px #ff822f;
+    }
+
+    img {
+      width: 21rem;
+      margin-bottom: 2rem;
+      border-radius: 0.5rem;
+      height: 4rem;
+    }
+
+    .footer {
+      color: #0400ff;
+      font-size: 0.8rem;
+      margin-top: 10rem;
+      background-color: white;
+      border: none;
+    }
+
+    span {
+      font-family: cinzel decorative;
+      font-weight: 700;
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main">
+    <img src="heading.png" alt="image">
+    <p>Test your knowldege with our game!</p>
+    <div class="container">
+      <a href="islamicgkfinal.html" class="box">Beginner</a>
+      <a href="islamicgkfinal.html" class="box">Intermediate</a>
+      <a href="islamicgkfinal.html" class="box">Advanced</a>
+    </div>
+    <p class="footer">Prepared & presented by: <span>Ghulam Samdani</span></p>
+  </div>
+  <script>
+    (function () {
+      const AUDIO_SRC = 'click.mp3';      // ensure file is in same folder
+      const NAV_FALLBACK_MS = 5000;       // max wait for audio before forcing navigation
+      const clickAudio = new Audio(AUDIO_SRC);
+      clickAudio.preload = 'auto';
+      clickAudio.volume = 1.0;
+
+      let pendingCleanup = null;
+      let unlocked = false;
+
+      // Try unlocking audio on first user gesture
+      function tryUnlockOnce() {
+        if (unlocked) return;
+        clickAudio.play().then(() => {
+          clickAudio.pause();
+          clickAudio.currentTime = 0;
+          unlocked = true;
+        }).catch(() => { });
+      }
+      document.addEventListener('pointerdown', tryUnlockOnce, { once: true });
+      document.addEventListener('keydown', tryUnlockOnce, { once: true });
+
+      function clearPending() {
+        if (!pendingCleanup) return;
+        try { pendingCleanup(); } catch (e) { }
+        pendingCleanup = null;
+        try { clickAudio.pause(); clickAudio.currentTime = 0; } catch (e) { }
+      }
+
+      function makeNavWaitCleanup(onEndedRef, fallbackTimer) {
+        return function () {
+          try { clickAudio.removeEventListener('ended', onEndedRef); } catch (e) { }
+          try { clearTimeout(fallbackTimer); } catch (e) { }
+        };
+      }
+
+      // Helper: play sound from start (returns play Promise or null)
+      function playSoundFromStart() {
+        try {
+          clickAudio.pause();
+          clickAudio.currentTime = 0;
+        } catch (e) { }
+        try {
+          return clickAudio.play();
+        } catch (e) {
+          return null;
+        }
+      }
+
+      // pageshow / visibility events: clear pending so back-button doesn't lock clicks
+      window.addEventListener('pageshow', function () {
+        clearPending();
+        unlocked = false;
+        try { clickAudio.pause(); clickAudio.currentTime = 0; } catch (e) { }
+        document.addEventListener('pointerdown', tryUnlockOnce, { once: true });
+        document.addEventListener('keydown', tryUnlockOnce, { once: true });
+      });
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') clearPending();
+      });
+
+      // Main click handler: handles anchors/links specially (wait then navigate),
+      // and buttons/other clickable elements by just playing sound.
+      document.addEventListener('click', function (ev) {
+        // Left-click only, and ignore modifier-key clicks
+        if (ev.button !== 0) return;
+        if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey) return;
+
+        const el = ev.target.closest('a, button, input, [role="button"], [data-wait]');
+        if (!el) return;
+
+        // If it's an <a>
+        if (el.tagName && el.tagName.toLowerCase() === 'a') {
+          const a = el;
+          const href = a.getAttribute('href') || '';
+          // allow mailto/javascript empty behavior
+          if (href.startsWith('javascript:') || href.startsWith('mailto:') || href === '') return;
+
+          const isTargetBlank = (a.target && a.target.toLowerCase() === '_blank');
+
+          // If previous pending nav exists, cancel it (user clicked again)
+          if (pendingCleanup) clearPending();
+
+          // Prevent default for same-tab navigation so we can play sound first
+          ev.preventDefault();
+
+          // If target _blank: open immediately and play sound (don't wait)
+          if (isTargetBlank) {
+            try {
+              window.open(a.href, '_blank', 'noopener');
+            } catch (e) {
+              setTimeout(() => window.open(a.href, '_blank', 'noopener'), 0);
+            }
+            playSoundFromStart();
+            return;
+          }
+
+          // same-tab: play sound, wait for 'ended' or fallback, then navigate
+          const playPromise = playSoundFromStart();
+          let done = false;
+          function onEnded() {
+            if (done) return;
+            done = true;
+            if (pendingCleanup) { pendingCleanup(); pendingCleanup = null; }
+            try { window.location.href = a.href; } catch (e) { }
+          }
+          const fallbackTimer = setTimeout(() => {
+            if (done) return;
+            done = true;
+            if (pendingCleanup) { pendingCleanup(); pendingCleanup = null; }
+            try { window.location.href = a.href; } catch (e) { }
+          }, NAV_FALLBACK_MS);
+
+          pendingCleanup = makeNavWaitCleanup(onEnded, fallbackTimer);
+
+          if (playPromise && typeof playPromise.then === 'function') {
+            playPromise.then(() => {
+              clickAudio.addEventListener('ended', onEnded, { once: true });
+            }).catch(err => {
+              // If play rejected (rare), fallback to short delay navigation
+              setTimeout(() => {
+                if (!done) { done = true; if (pendingCleanup) { pendingCleanup(); pendingCleanup = null; } window.location.href = a.href; }
+              }, 160);
+            });
+          } else {
+            clickAudio.addEventListener('ended', onEnded, { once: true });
+          }
+
+          return;
+        }
+
+        // Otherwise handle buttons / inputs / role=button / cursor:pointer elements
+        // We locate the closest clickable element (button or input or role=button or data-wait)
+        const clickedBtn = ev.target.closest('button, input[type="button"], input[type="submit"], [role="button"], [data-wait]');
+
+        if (!clickedBtn) return;
+
+        // If element explicitly requests waiting (data-wait="true"), we wait for full audio
+        const shouldWait = clickedBtn.hasAttribute('data-wait');
+
+        if (!shouldWait) {
+          // Play sound and let default behavior continue (form submit or JS handler)
+          playSoundFromStart();
+          return;
+        }
+
+        // If shouldWait is true => prevent default, play sound fully, then trigger original action
+        ev.preventDefault();
+
+        // If it's a submit button inside a form, we'll submit after sound
+        const form = clickedBtn.closest('form');
+
+        // cancel any previous pending
+        if (pendingCleanup) clearPending();
+
+        const playPromise = playSoundFromStart();
+        let done = false;
+        function onEndedBtn() {
+          if (done) return;
+          done = true;
+          if (pendingCleanup) { pendingCleanup(); pendingCleanup = null; }
+          // Trigger original action: for submit buttons submit form, else simulate click
+          if (form && (clickedBtn.type === 'submit' || clickedBtn.getAttribute('type') === 'submit')) {
+            try { form.submit(); } catch (e) { /* fallback */ }
+          } else {
+            // try invoking click handler or navigate if data-href present
+            const dataHref = clickedBtn.getAttribute('data-href');
+            if (dataHref) {
+              window.location.href = dataHref;
+            } else {
+              // attempt to trigger original default: dispatch a click event without our prevention
+              try {
+                const ev2 = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
+                clickedBtn.dispatchEvent(ev2);
+              } catch (e) { }
+            }
+          }
+        }
+
+        const fallbackTimer = setTimeout(() => {
+          if (done) return;
+          done = true;
+          if (pendingCleanup) { pendingCleanup(); pendingCleanup = null; }
+          if (form && (clickedBtn.type === 'submit' || clickedBtn.getAttribute('type') === 'submit')) {
+            try { form.submit(); } catch (e) { }
+          } else {
+            const dataHref = clickedBtn.getAttribute('data-href');
+            if (dataHref) window.location.href = dataHref;
+          }
+        }, NAV_FALLBACK_MS);
+
+        pendingCleanup = makeNavWaitCleanup(onEndedBtn, fallbackTimer);
+
+        if (playPromise && typeof playPromise.then === 'function') {
+          playPromise.then(() => {
+            clickAudio.addEventListener('ended', onEndedBtn, { once: true });
+          }).catch(err => {
+            setTimeout(() => {
+              if (!done) { done = true; if (pendingCleanup) { pendingCleanup(); pendingCleanup = null; } if (form) { try { form.submit(); } catch (e) { } } }
+            }, 160);
+          });
+        } else {
+          clickAudio.addEventListener('ended', onEndedBtn, { once: true });
+        }
+      }, false);
+
+      // ensure cleanup on unload
+      window.addEventListener('beforeunload', clearPending);
+
+      // audio error logging
+      clickAudio.addEventListener('error', function (e) {
+        console.error('Click audio error. Check click.mp3 path/file.', e);
+      });
+    })();
+  </script>
+
+</body>
+
+</html>

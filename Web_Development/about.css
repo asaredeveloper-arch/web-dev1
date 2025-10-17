@@ -1,0 +1,215 @@
+/* ===== Base Styles ===== */
+body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  color: #222;
+  margin: 0;
+  background: #fdfdfd;
+}
+
+a {
+  color: #0055ff;
+  text-decoration: none;
+}
+
+h1, h2, h3 {
+  margin: 0 0 10px 0;
+}
+
+p {
+  margin: 0 0 15px 0;
+}
+
+/* ===== Navigation ===== */
+ nav {
+        display: flex;
+        flex-direction: row;
+        background-color: orange;
+        color: white;
+        font-size: 1.3rem;
+        padding: 0.3rem 1rem 0.3rem 1rem;
+        margin: 0rem 0rem 0rem 0rem;
+        text-decoration: none;
+        gap: 0.5rem;
+        position: sticky;
+        top: 0rem;
+        z-index: 1000;
+    }
+
+    nav > a {
+        text-decoration: none;
+        color: white;
+    }
+
+/* ===== Hero Section ===== */
+.hero {
+  max-width: 900px;
+  margin: 40px auto 30px auto;
+  padding: 0 15px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  color: red;
+}
+
+.hero .lead {
+  font-size: 1.15rem;
+  color: #555;
+}
+
+/* ===== Quick Facts ===== */
+.quick-facts {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 900px;
+  margin: 30px auto;
+  gap: 15px;
+  padding: 0 15px;
+}
+
+.quick-facts .fact {
+  flex: 1 1 200px;
+  background: #f5f7fa;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.quick-facts .fact h3 {
+  color: #0055ff;
+  margin-bottom: 10px;
+}
+
+/* ===== Sections ===== */
+section {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 15px;
+}
+
+section h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #2200ff;
+}
+
+/* Articles inside sections */
+section article {
+  margin-bottom: 25px;
+}
+
+section article h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: #ff00c3;
+}
+
+section .note {
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* ===== Lists ===== */
+ul {
+  padding-left: 20px;
+  margin-bottom: 15px;
+}
+
+ol {
+  padding-left: 20px;
+  margin-bottom: 15px;
+}
+
+/* ===== Blockquotes ===== */
+blockquote {
+  background: #eef5ff;
+  border-left: 5px solid #0055ff;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  padding: 12px 20px;
+  margin: 15px 0;
+  font-style: italic;
+}
+
+/* ===== FAQ ===== */
+details {
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+summary {
+  font-weight: 600;
+  color: #ff00c3;
+}
+
+/* ===== CTA Section ===== */
+.cta {
+  background: #eef5ff;
+  text-align: center;
+  padding: 30px 15px;
+  border-radius: 8px;
+  display: block;
+  margin: auto;
+  margin-bottom: 2rem;
+}
+
+.cta h2 {
+  margin-bottom: 15px;
+}
+
+/* ===== Footer ===== */
+.about-footer {
+  text-align: center;
+  padding: 25px 15px;
+  color: #555;
+  background: #f8f9fa;
+  border-top: 1px solid #e2e4e8;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .hero .lead {
+    font-size: 1rem;
+  }
+
+  .quick-facts {
+    flex-direction: row;
+    text-align: center;
+  }
+
+  .quick-facts .fact {
+    text-align: center;
+  }
+
+  section h2 {
+    font-size: 1.7rem;
+  }
+
+  section article h3 {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero .lead {
+    font-size: 0.95rem;
+  }
+
+  nav {
+    flex-direction: row;
+    gap: 10px;
+  }
+}

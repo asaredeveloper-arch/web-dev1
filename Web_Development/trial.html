@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islamic Fiqh Quiz</title>
+    <style>
+        :root {
+            --primary-color: #0d47a1; /* Deep Blue */
+            --secondary-color: #f9a825; /* Gold/Yellow */
+            --light-color: #ffffff;
+            --dark-color: #0a3371;
+            --bg-color: #e3f2fd; /* Light Blue Background */
+            --text-color: #212121;
+            --danger-color: #d32f2f;
+            --success-color: #388e3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: var(--light-color);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 1px solid #bbdefb;
+        }
+
+        /* --- Header Stats --- */
+        .header-stats {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--bg-color);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: var(--primary-color);
+            color: var(--light-color);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            flex: 1;
+            min-width: 120px;
+            justify-content: center;
+        }
+
+        /* --- Fiqh Fact --- */
+        .fiqh-fact {
+            background: #fff9c4;
+            border-left: 5px solid var(--secondary-color);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        /* --- Screens --- */
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        
+        h1, h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        /* --- Home Screen --- */
+        #level-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 15px;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .level-btn {
+            padding: 20px 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            border-radius: 12px;
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            visibility: visible !important;
+            opacity: 1 !important;
+            display: block !important;
+        }
+
+        .level-btn:not(.locked):hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(13, 71, 161, 0.4);
+        }
+
+        .level-btn.locked {
+            background-color: #90a4ae;
+            color: #eceff1;
+            cursor: not-allowed;
+        }
+
+        .level-btn.locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            font-size: 1rem;
+        }
+
+        /* --- Quiz Screen --- */
+        #question-text {
+            font-size: 1.3rem;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 25px;
+            min-height: 60px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--light-color);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            margin-bottom: 8px;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+        }
+
+        .option-btn.correct {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            color: var(--light-color);
+            font-weight: bold;
+        }
+        .option-btn.wrong {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+            color: var(--light-color);
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        /* --- Result/Lockout Screens --- */
+        .centered-screen {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .centered-screen p {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            border-radius: 50px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+        }
+        .btn-secondary {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            margin-top: 10px;
+        }
+        
+        #countdown-timer {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--danger-color);
+            margin: 20px 0;
+            padding: 10px;
+            background: #ffebee;
+            border-radius: 8px;
+        }
+
+        /* NEW STYLES FOR ADDED FEATURES */
+        #global-progress-container {
+            margin: 15px 0;
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        #stats-container {
+            margin: 10px 0;
+        }
+
+        #stats-toggle-btn {
+            padding: 8px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        #stats-content {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        #level-progress-bar {
+            margin: 15px 0;
+        }
+
+        #level-timer-container {
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #d32f2f;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .reward-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: popIn 0.5s ease-out;
+        }
+
+        /* Add this CSS for the main overall accuracy progress bar */
+        #main-accuracy-progress {
+            margin: 20px 0;
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        #main-accuracy-label {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        #main-accuracy-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        #main-accuracy-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 6px;
+            transition: all 0.5s ease;
+        }
+
+        #main-accuracy-percentage {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        /* Ensure countdown display is visible */
+        #quiz-countdown {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .quiz-countdown {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--danger-color);
+            margin: 10px 0;
+            padding: 8px;
+            background: #ffebee;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* NEW STYLES FOR LEVEL ACCURACY PROGRESS BARS */
+        .level-accuracy-container {
+            margin-bottom: 15px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .level-accuracy-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .level-accuracy-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .level-accuracy-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 4px;
+            transition: all 0.5s ease;
+        }
+
+        /* NEW: Level button accuracy display */
+        .level-btn::before {
+            content: attr(data-accuracy);
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--secondary-color);
+            color: var(--text-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .level-btn.locked::before {
+            display: none;
+        }
+
+        /* NEW: Hide level accuracy bars by default */
+        #level-accuracy-container {
+            display: none;
+        }
+
+        /* Responsive fixes for level buttons */
+        @media (max-width: 480px) {
+            #level-selection {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)) !important;
+                gap: 12px !important;
+            }
+            
+            .level-btn::before {
+                width: 25px;
+                height: 25px;
+                font-size: 0.6rem;
+                top: -5px;
+                right: -5px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            #level-selection {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)) !important;
+                gap: 10px !important;
+            }
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header: Score, Coins, Hearts -->
+        <div class="header-stats">
+            <div class="stat-item">⭐ Score: <span id="score-display">0</span></div>
+            <div class="stat-item">💰 Coins: <span id="coins-display">0</span></div>
+            <div class="stat-item">❤ Hearts: <span id="hearts-display">10</span></div>
+        </div>
+
+        <!-- Daily Fact Box -->
+        <div class="fiqh-fact">
+            💡 <strong>Fiqh Fact:</strong> Wuzu ke bina Quran ko chhoo nahi sakte.
+        </div>
+
+        <!-- Home Screen (Level Selection) -->
+        <div id="home-screen" class="screen active">
+            <h2>Select a Level</h2>
+            <!-- <div id="global-progress-container"></div> -->
+            <div id="stats-container"></div>
+            <div id="main-accuracy-progress"></div>
+            
+            <!-- NEW: Level accuracy progress bars container -->
+            <div id="level-accuracy-container"></div>
+            
+            <div id="level-selection">
+                <!-- Level buttons generated by JS -->
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="screen">
+            <h2 id="level-title">Level X</h2>
+            <div id="level-progress-bar"></div>
+            <div id="quiz-countdown-container"></div>
+            <div id="level-timer-container"></div>
+            <p id="question-text">Question text goes here...</p>
+            <div id="options-container">
+                <!-- Option buttons generated by JS -->
+            </div>
+        </div>
+
+        <!-- Level Complete Screen -->
+        <div id="level-complete-screen" class="screen centered-screen">
+            <h2 id="complete-title">Mubarak Ho!</h2>
+            <p id="complete-message">Aapne level complete kar liya hai. Aapko +50 coins mile hain!</p>
+            <button id="next-level-btn" class="btn btn-primary">Next Level</button>
+            <br>
+            <button id="home-btn-from-complete" class="btn btn-secondary">Home</button>
+        </div>
+
+        <!-- Lockout Screen (No Hearts) -->
+        <div id="lockout-screen" class="screen centered-screen">
+            <h2>Dil Khatm Ho Gaye!</h2>
+            <p>Agle level ke liye intezar karein ya 50 coins dekar continue karein.</p>
+            <div id="countdown-timer">10:00</div>
+            <button id="unlock-with-coins-btn" class="btn btn-primary">Pay 50 💰 & Continue</button>
+            <br>
+            <button id="home-btn-from-lockout" class="btn btn-secondary">Go to Home</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. DATA: Questions for all 10 levels ---
+            const quizData = {
+                1: [{ q: "Wuzu mein kitne farz hain?", o: ["3", "4", "5", "7"], a: 1 }, { q: "Kya bina wuzu ke Quran padhna jaiz hai (bina chhue)?", o: ["Haan", "Nahi", "Makruh hai", "Pata nahi"], a: 0 }, { q: "Namaz-e-Janaza ka hukum kya hai?", o: ["Farz-e-Ain", "Sunnat", "Farz-e-Kifayah", "Wajib"], a: 2 }, { q: "Zakat saal mein kitni baar farz hai?", o: ["Ek baar", "Do baar", "Har mahine", "Jab paise hon"], a: 0 }, { q: "Qurbani kis par wajib hoti hai?", o: ["Har musalman par", "Sirf mard par", "Sahib-e-Nisab par", "Sirf haji par"], a: 2 }, { q: "Ghusl mein kitne farz hain?", o: ["2", "3", "4", "5"], a: 1}, { q: "Kaun si cheez wuzu tod deti hai?", o: ["Khana khana", "Pani peena", "Neend (let kar)", "Baat karna"], a: 2}, { q: "Namaz me agar koi rukn bhool jaye to kya karte hain?", o: ["Namaz dohrate hain", "Sajda-e-Sahw", "Astaghfar padhte hain", "Kuch nahi"], a: 1}, { q: "Roze ki halat mein kya injection lagwa sakte hain?", o: ["Haan, agar zaroori ho", "Bilkul nahi", "Makruh hai", "Roza toot jata hai"], a: 0}, { q: "Safar me namaz ko qasr (kam) karne ki sharait kya hai?", o: ["20km safar par", "Ek din ke safar par", "Sharai Musafir hone par", "Har safar me"], a: 2}],
+                2: [{ q: "Jummah ki namaz mardon par kya hai?", o: ["Sunnat", "Farz", "Wajib", "Nafil"], a: 1 }, { q: "Tayammum kab kiya jaata hai?", o: ["Jab thand ho", "Jab paani na mile", "Jab bimar ho", "B aur C dono"], a: 3 }, { q: "Eid ki namaz ka hukum kya hai?", o: ["Farz", "Sunnat", "Wajib", "Mustahab"], a: 2 }, { q: "Kis waqt namaz padhna mana hai?", o: ["Zohar ke baad", "Suraj nikalte waqt", "Asr se pehle", "Raat me"], a: 1 }, { q: "Sadqa-e-Fitr kab dena wajib hai?", o: ["Ramzan ke aakhir mein", "Eid ke din", "Eid ki namaz se pehle", "Kabhi bhi"], a: 2 }, { q: "Ek din mein kitni namazein farz hain?", o: ["3", "4", "5", "6"], a: 2 }, { q: "Kya roze me bhool kar kha-pee lene se roza toot jata hai?", o: ["Haan", "Nahi", "Makruh hojata hai", "Qaza rakhni padegi"], a: 1 }, { q: "Masjid se nikalne ki dua kya hai?", o: ["Allahumma inni as'aluka min fadlik", "Allahummaftah li abwaba rahmatik", "Bismillah", "SubhanAllah"], a: 0 }, { q: "Zakat ka nisab chandi (silver) mein kitna hai?", o: ["50 tola", "52.5 tola", "55 tola", "60 tola"], a: 1 }, { q: "Janaze ko kandha dena kya hai?", o: ["Farz", "Wajib", "Sunnat", "Sawab ka kaam hai"], a: 3 }],
+                3: [{ q: "Ramzan ke roze ka hukum kya hai?", o: ["Sunnat", "Farz", "Wajib", "Nafil"], a: 1 }, { q: "Roze ki niyat kab tak kar sakte hain?", o: ["Fajr se pehle", "Zawal se pehle", "Asr tak", "Kabhi bhi"], a: 1 }, { q: "E'tikaaf ke liye sabse afzal jagah kaun si hai?", o: ["Ghar", "Jama Masjid", "Eidgah", "Koi bhi paak jagah"], a: 1 }, { q: "Shab-e-Qadr Ramzan ke kis ashre mein hoti hai?", o: ["Pehle ashre mein", "Dusre ashre mein", "Aakhri ashre mein", "Pata nahi"], a: 2 }, { q: "Agar koi jaan boojh kar roza tod de to uska kaffara kya hai?", o: ["1 roza", "10 roze", "60 miskinon ko khana ya 60 roze", "Tauba karna"], a: 2 }, { q: "Kya roze me miswak kar sakte hain?", o: ["Haan", "Nahi", "Makruh hai", "Zohar tak"], a: 0 }, { q: "Taraweeh ki namaz ka hukum kya hai?", o: ["Farz", "Wajib", "Sunnat-e-Mu'akkadah", "Nafil"], a: 2 }, { q: "Roza kis cheez se nahi tootta?", o: ["Qay karna (ulti)", "Khoon dena", "Bhool kar khana", "Injection lagwana"], a: 2 }, { q: "Sehri khane ka hukum kya hai?", o: ["Farz", "Wajib", "Sunnat", "Mubah"], a: 2 }, { q: "Roze ka asal maqsad kya hai?", o: ["Bhooka rehna", "Wazan kam karna", "Taqwa haasil karna", "Bimari se bachna"], a: 2 }],
+                4: [{ q: "Zakat kin logon par farz hai?", o: ["Har Musalman par", "Sirf Ameer par", "Sahib-e-Nisab par", "Sirf karobari par"], a: 2 }, { q: "Sone (gold) ka zakat nisab kya hai?", o: ["5 tola", "7.5 tola", "10 tola", "12 tola"], a: 1 }, { q: "Zakat, maal par saal guzarne ke baad kitne fisad (%) deni hoti hai?", o: ["1%", "2%", "2.5%", "5%"], a: 2 }, { q: "Kya pehenne wale zevar par Zakat farz hai?", o: ["Haan", "Nahi", "Ikhtilaf hai", "Imam Abu Hanifa ke nazdeek farz hai"], a: 3 }, { q: "Kin rishtedaron ko Zakat nahi de sakte?", o: ["Bhai-Behen", "Chacha-Mamu", "Maa-Baap aur Aulaad", "Dost"], a: 2 }, { q: "Zakat ke Mustahiqeen (haqdaar) ka zikr Quran ki kis Surah mein hai?", o: ["Surah Baqarah", "Surah Aal-e-Imran", "Surah Taubah", "Surah Yasin"], a: 2 }, { q: "Fitra kis par wajib hai?", o: ["Sirf mardon par", "Har sahib-e-nisab par", "Har aazad musalman par jo nisab ka malik ho", "Sirf rozedar par"], a: 2 }, { q: "Naqd raqam (cash) par zakat ka kya hukum hai?", o: ["Farz nahi", "Farz hai agar nisab tak pahunche", "Makruh hai", "Mustahab hai"], a: 1 }, { q: "Zameen ki paidawar par jo zakat hoti hai use kya kehte hain?", o: ["Jizya", "Ushr", "Kharaj", "Maal-e-Ghanimat"], a: 1 }, { q: "Agar kisi ke paas nisab se kam maal ho to uspar zakat ka kya hukum hai?", o: ["Farz nahi hai", "Dena behtar hai", "Aadhi deni hogi", "Gunah milega"], a: 0 }],
+                5: [{ q: "Hajj zindagi mein kitni baar farz hai?", o: ["Har saal", "Ek baar", "Jab bhi mauqa mile", "Paanch baar"], a: 1 }, { q: "Hajj ke Faraiz kitne hain?", o: ["2", "3", "4", "5"], a: 1 }, { q: "Ehram ki halat mein kya cheez mamnoo (mana) hai?", o: ["Nahana", "Khushbu lagana", "Miswak karna", "Chashma lagana"], a: 1 }, { q: "Tawaf-e-Ziyarat ka hukum kya hai?", o: ["Sunnat", "Wajib", "Farz", "Nafil"], a: 2 }, { q: "Safa aur Marwa ke darmiyan daudne ko kya kehte hain?", o: ["Tawaf", "Rami", "Sa'ee", "Waqoof"], a: 2 }, { q: "Arafat ke maidan mein theherne ko kya kehte hain?", o: ["Waqoof-e-Muzdalifah", "Waqoof-e-Arafat", "Rami", "Tawaf"], a: 1 }, { q: "Shaitan ko kankariyan maarne ke amal ko kya kehte hain?", o: ["Sa'ee", "Halq", "Rami", "Qurbani"], a: 2 }, { q: "Hajj ka sabse ahem rukn kaunsa hai?", o: ["Tawaf", "Sa'ee", "Waqoof-e-Arafat", "Qurbani"], a: 2 }, { q: "Hajj-e-Badal kya hota hai?", o: ["Chota Hajj", "Doosre ki taraf se Hajj karna", "Baar baar Hajj karna", "Paidal Hajj karna"], a: 1 }, { q: "Umrah ka hukum kya hai?", o: ["Farz", "Wajib", "Sunnat-e-Mu'akkadah", "Nafil"], a: 2 }],
+                6: [{ q: "Paani na hone par wuzu aur ghusl ka badal kya hai?", o: ["Mitti se saaf karna", "Tayammum", "Masah", "Wuzu nahi karna"], a: 1 }, { q: "Nifas kise kehte hain?", o: ["Haiz ka khoon", "Bimari ka khoon", "Bachay ki paidaish ke baad ka khoon", "Zakhm ka khoon"], a: 2 }, { q: "Istihaza ke khoon ka kya hukum hai?", o: ["Namaz maaf hai", "Roza maaf hai", "Yeh ek bimari hai, har namaz ke liye wuzu karna hoga", "Ghusl wajib hai"], a: 2 }, { q: "Agar kapde par najasat (gandagi) lag jaye to kya karna chahiye?", o: ["Kapda badalna", "Namaz nahi padhna", "Us hisse ko paak karna", "Wuzu karna"], a: 2 }, { q: "Murdaar janwar ka kya hukum hai?", o: ["Paak hai", "Khana jaiz hai", "Napaak aur Haram hai", "Sirf gosht haram hai"], a: 2 }, { q: "Kutte ka jhootha (saliva) kya hai?", o: ["Paak", "Makruh", "Napaak", "Pata nahi"], a: 2 }, { q: "Azan dene ka hukum kya hai?", o: ["Farz", "Wajib", "Sunnat-e-Mu'akkadah", "Mustahab"], a: 2 }, { q: "Namaz me Qiyam (khada hona) ka hukum kya hai?", o: ["Sunnat", "Wajib", "Farz", "Mustahab"], a: 2 }, { q: "Jamaat ke saath namaz padhne ka sawab kitna zyada hai?", o: ["10 guna", "20 guna", "27 guna", "50 guna"], a: 2 }, { q: "Agar imam se ghalti ho jaye to muqtadi kya kare?", o: ["Namaz tod de", "Luqma de (SubhanAllah kahe)", "Sajda kare", "Khamosh rahe"], a: 1 }],
+                7: [{ q: "Islami shariyat mein khareed o farokht (business) ka kya hukum hai?", o: ["Haram", "Makruh", "Jaiz aur zaroori", "Sirf kuch cheezon ka"], a: 2 }, { q: "Sood (interest/riba) ka Islami shariyat mein kya hukum hai?", o: ["Jaiz hai", "Makruh hai", "Haram-e-Qat'i (sakht haram)", "Thoda sa jaiz hai"], a: 2 }, { q: "Kisi cheez ko khareedne se pehle usay dekh lene ko kya kehte hain?", o: ["Khiyar-e-Shart", "Khiyar-e-Aib", "Khiyar-e-Ruyat", "Khiyar-e-Majlis"], a: 2 }, { q: "Agar khareedi hui cheez mein aib (defect) nikle to kya hukum hai?", o: ["Wapas nahi kar sakte", "Wapas karne ka ikhtiyar hai", "Keemat kam karni hogi", "Aise hi istemal kare"], a: 1 }, { q: "Kisi ka maal uski ijazat ke baghair istemal karna kya hai?", o: ["Jaiz", "Makruh", "Haram aur Gunah", "Dosti me chalta hai"], a: 2 }, { q: "Shirkat (partnership) mein nafa aur nuqsan ki buniyad kya honi chahiye?", o: ["Sirf ek ki zimmedari", "Tay shuda hisse ke mutabiq", "Barabar barabar", "Jisne zyada kaam kiya"], a: 1 }, { q: "Girvi (rahn) rakhne ka kya matlab hai?", o: ["Bech dena", "Qarz ke badle koi cheez amanat rakhna", "Hamesha ke liye de dena", "Uphar dena"], a: 1 }, { q: "Bima (Insurance) ki maujooda shaklon ka sharai hukum kya hai?", o: ["Bilkul jaiz", "Haram", "Isme sood aur juwa shamil hai isliye najaiz", "Zaroori hai"], a: 2 }, { q: "Jo cheez aapke paas na ho, kya uska sauda kar sakte hain?", o: ["Haan", "Nahi, mana hai", "Kar sakte hain agar baad me de dein", "Sirf dost se"], a: 1 }, { q: "Udhaar (qarz) lene dene ka hukum kya hai?", o: ["Mana hai", "Jaiz hai", "Sirf zaroorat par jaiz hai", "B aur C dono"], a: 3 }],
+                8: [{ q: "Nikah ke liye ladki aur ladke ki razamandi ka kya hukum hai?", o: ["Zaroori nahi", "Sirf ladke ki zaroori hai", "Dono ki razamandi shart (zaroori) hai", "Wali ki marzi kaafi hai"], a: 2 }, { q: "Nikah mein 'Mehar' ka hukum kya hai?", o: ["Zaroori nahi", "Ladke ki taraf se aurat ka haq aur farz hai", "Ladki walon ki taraf se tohfa hai", "Baad me de sakte hain"], a: 1 }, { q: "Ek waqt mein ek musalman mard kitni shaadiyan kar sakta hai (agar woh sabke huqooq ada kar sake)?", o: ["Ek", "Do", "Teen", "Chaar tak"], a: 3 }, { q: "Talaq dene ka sabse napasandeeda jaiz kaam kaunsa hai?", o: ["Gusse mein talaq dena", "Talaq dena (bila wajah)", "Likh kar talaq dena", "Sabke samne talaq dena"], a: 1 }, { q: "Talaq-e-Biddat kya hai?", o: ["Ek saath teen talaq de dena", "Soch samajh kar talaq dena", "Gawahon ke samne talaq dena", "Gusse me talaq dena"], a: 0 }, { q: "Khula kise kehte hain?", o: ["Mard ka talaq dena", "Aurat ka kuch maal dekar talaq haasil karna", "Court se talaq lena", "Wali ka talaq dena"], a: 1 }, { q: "Iddat kya hai?", o: ["Ek rasm", "Talaq ya shohar ke inteqal ke baad aurat ka ek makhsoos muddat tak ghar me rehna", "Gham manana", "Shaadi ki tayyari"], a: 1 }, { q: "Aulaad ki parwarish aur taleem ki zimmedari kis par hai?", o: ["Sirf Maa par", "Sirf Baap par", "Maa aur Baap dono par", "Dada Dadi par"], a: 2 }, { q: "Ghair-Mehram se parda karne ka hukum kiske liye hai?", o: ["Sirf Aurton ke liye", "Sirf Mardon ke liye", "Mard aur Aurat dono ke liye", "Sirf shaadi-shuda ke liye"], a: 2 }, { q: "Walima (shaadi ki dawat) ka hukum kya hai?", o: ["Farz", "Wajib", "Sunnat", "Rasm hai"], a: 2 }],
+                9: [{ q: "Islam mein kin janwaron ka gosht khana haram hai?", o: ["Murghi", "Bakra", "Suar (Pork)", "Machli"], a: 2 }, { q: "Kisi janwar ko halal karne ke liye kya zaroori hai?", o: ["Bismillah padhna aur gale ki ragein kaatna", "Sirf gala kaatna", "Behosh karna", "Sirf Bismillah padhna"], a: 0 }, { q: "Sharab (alcohol) peene ka Islam mein kya hukum hai?", o: ["Thodi si jaiz hai", "Dawa ke taur par jaiz hai", "Sakhti se Haram hai", "Makruh hai"], a: 2 }, { q: "Agar khane mein koi haram cheez mil jaye to kya hukum hai?", o: ["Thoda sa kha sakte hain", "Nikal kar baaki kha sakte hain", "Poora khana haram ho jayega", "Pata na chale to jaiz hai"], a: 2 }, { q: "Machli ko halal karne ka kya tareeqa hai?", o: ["Zibah karna", "Pani se nikaal lena hi uska zibah hai", "Bismillah padhna", "Garam pani me dalna"], a: 1 }, { q: "Bismillah padhe baghair zibah kiye gaye janwar ka gosht kaisa hai?", o: ["Halal", "Makruh", "Haram", "Shak wala"], a: 2 }, { q: "Khoon (blood) khane ka kya hukum hai?", o: ["Jaiz", "Makruh", "Haram", "Dawa ke liye jaiz"], a: 2 }, { q: "Kaun sa samundari khana (sea food) bila-ikhtilaf halal hai?", o: ["Kekda (crab)", "Jheenga (prawn)", "Machli (fish)", "Sab"], a: 2 }, { q: "Jis khane par Allah ke alawa kisi aur ka naam liya jaye, uska hukum kya hai?", o: ["Jaiz", "Makruh", "Haram", "Tohfa samajh kar kha lein"], a: 2 }, { q: "Sone aur chandi ke bartan mein khana-peena kiske liye haram hai?", o: ["Sirf Aurton ke liye", "Sirf Mardon ke liye", "Mard aur Aurat dono ke liye", "Kisi ke liye nahi"], a: 2 }],
+                10: [{ q: "Virasat (inheritance) ke qanoon ko Islami fiqh mein kya kehte hain?", o: ["Ilm-ul-Kalam", "Ilm-ul-Faraiz", "Ilm-ul-Hadith", "Ilm-ul-Tafseer"], a: 1 }, { q: "Islami qanoon ka sabse pehla aur ahem source kya hai?", o: ["Hadith", "Ijma", "Quran", "Qiyas"], a: 2 }, { q: "Qiyas kise kehte hain?", o: ["Naya qanoon banana", "Quran o Hadith par ghaur karna", "Purane masle par naye masle ko aql se anuman lagana", "Sabki rai lena"], a: 2 }, { q: "Wasiyat (will) apne maal ke kitne hisse tak ki ja sakti hai?", o: ["Aadhe (1/2) tak", "Ek chauthai (1/4) tak", "Ek tihai (1/3) tak", "Poore maal ki"], a: 2 }, { q: "Laqit kise kehte hain?", o: ["Gira hua paisa", "Gira hua bachha jiske maa baap ka pata na ho", "Chori ka maal", "Amanat"], a: 1 }, { q: "Agar namaz me shak ho jaye ke 3 rakat padhi ya 4, to kya karna chahiye?", o: ["Namaz tod deni chahiye", "Kam yani 3 maan kar ek aur rakat padhein aur sajda sahw karein", "Zyada yani 4 maan lein", "Kisi se poochein"], a: 1 }, { q: "Qasam todne ka kaffara kya hai?", o: ["Ek roza", "Ek ghulam azaad karna ya 10 miskinon ko khana khilana ya 3 din ke roze", "100 rupaye sadqa", "Tauba karna"], a: 1 }, { q: "Murtad (jo Islam chhod de) ki saza Islami riyasat mein kya hai?", o: ["Jail", "Jurmala", "Tauba ka mauqa fir qatl", "Desh nikala"], a: 2 }, { q: "Fiqh ke 4 bade Imam kaun hain?", o: ["Imam Bukhari, Muslim, Tirmizi, Abu Dawood", "Imam Abu Hanifa, Malik, Shafi'i, Ahmad ibn Hanbal", "Imam Ghazali, Razi, Ibn Taymiyyah, Ibn Kathir", "Imam Jafar Sadiq, Hasan Basri, Sufyan Thawri, Awzai"], a: 1 }, { q: "Deen mein nayi cheez ijaad karna jo asal se sabit na ho, use kya kehte hain?", o: ["Ijtihad", "Bid'at", "Taqleed", "Sunnat"], a: 1 }],
+            };
+            const TOTAL_LEVELS = 10;
+
+            // --- 2. DOM Elements ---
+            const screens = { home: document.getElementById('home-screen'), quiz: document.getElementById('quiz-screen'), complete: document.getElementById('level-complete-screen'), lockout: document.getElementById('lockout-screen'), };
+            const displays = { score: document.getElementById('score-display'), coins: document.getElementById('coins-display'), hearts: document.getElementById('hearts-display'), };
+            const levelSelectionContainer = document.getElementById('level-selection');
+            const levelTitle = document.getElementById('level-title');
+            const questionText = document.getElementById('question-text');
+            const optionsContainer = document.getElementById('options-container');
+            const countdownTimer = document.getElementById('countdown-timer');
+            const completeTitle = document.getElementById('complete-title');
+            const completeMessage = document.getElementById('complete-message');
+            const buttons = { nextLevel: document.getElementById('next-level-btn'), unlockWithCoins: document.getElementById('unlock-with-coins-btn'), homeFromComplete: document.getElementById('home-btn-from-complete'), homeFromLockout: document.getElementById('home-btn-from-lockout'), };
+            
+            // --- 3. Game State & Logic ---
+            let gameState = {};
+            let currentLevel = 0;
+            let currentQuestionIndex = 0;
+            let lockoutInterval = null;
+
+            // NEW FEATURES: Extended game state
+            let extendedState = JSON.parse(localStorage.getItem('islamicQuizExtendedState')) || {
+                levelTimes: {},
+                currentTimer: null,
+                currentTimeLeft: 0,
+                coinsEarned: 0,
+                coinsUsed: 0,
+                highestStreak: 0,
+                currentStreak: 0,
+                levelProgress: {},
+                levelCompletion: {},
+                completedLevels: [],
+                showStats: false,
+                // NEW: Store level accuracy data
+                levelAccuracy: {}
+            };
+
+            // FIXED: Audio elements with proper file paths
+            const audioElements = {
+                correct: new Audio('complete.mp3'),
+                wrong: new Audio('wrong.mp3'),
+                levelComplete: new Audio('finalcomplete.mp3'),
+                levelFailed: new Audio('finalwrong.mp3'),
+                allComplete: new Audio('allcomplete.mp3'),
+                // NEW: Click sound
+                click: new Audio('click.mp3')
+            };
+
+            // FIXED: Audio preloading and error handling
+            function preloadAudio() {
+                Object.values(audioElements).forEach(audio => {
+                    audio.preload = 'auto';
+                    audio.load();
+                    
+                    // Add error handling for audio files
+                    audio.addEventListener('error', (e) => {
+                        console.warn(`Audio file failed to load: ${audio.src}`);
+                        // Create a dummy audio element if file doesn't exist
+                        if (audio === audioElements.click) {
+                            // Create a simple beep sound for click
+                            const context = new (window.AudioContext || window.webkitAudioContext)();
+                            const oscillator = context.createOscillator();
+                            const gainNode = context.createGain();
+                            
+                            oscillator.connect(gainNode);
+                            gainNode.connect(context.destination);
+                            
+                            oscillator.frequency.value = 800;
+                            oscillator.type = 'sine';
+                            gainNode.gain.value = 0.1;
+                            
+                            oscillator.start();
+                            setTimeout(() => {
+                                oscillator.stop();
+                            }, 50);
+                        }
+                    });
+                    
+                    audio.addEventListener('canplaythrough', () => {
+                        console.log(`Audio loaded: ${audio.src}`);
+                    });
+                });
+            }
+
+            // FIXED: Safe audio playback function
+            function playAudio(audioName) {
+                const audio = audioElements[audioName];
+                if (audio) {
+                    // Reset audio to start
+                    audio.currentTime = 0;
+                    
+                    // Play the audio
+                    const playPromise = audio.play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.log(`Audio play failed for ${audioName}:`, error);
+                            
+                            // Fallback: Create a simple beep for click sound
+                            if (audioName === 'click') {
+                                try {
+                                    const context = new (window.AudioContext || window.webkitAudioContext)();
+                                    const oscillator = context.createOscillator();
+                                    const gainNode = context.createGain();
+                                    
+                                    oscillator.connect(gainNode);
+                                    gainNode.connect(context.destination);
+                                    
+                                    oscillator.frequency.value = 800;
+                                    oscillator.type = 'sine';
+                                    gainNode.gain.value = 0.1;
+                                    
+                                    oscillator.start();
+                                    setTimeout(() => {
+                                        oscillator.stop();
+                                    }, 50);
+                                } catch (e) {
+                                    console.log("Could not create fallback audio");
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+
+            // NEW: Global click sound handler - FIXED
+            function setupGlobalClickSound() {
+                // Use event delegation for dynamically created buttons
+                document.addEventListener('click', function(e) {
+                    // Check if the clicked element is a button or inside a button
+                    let target = e.target;
+                    while (target && target !== document) {
+                        if (target.tagName === 'BUTTON') {
+                            // Skip MCQ buttons and buttons with suppress attribute
+                            if (!target.classList.contains('option-btn') && 
+                                !target.hasAttribute('data-suppress-global-click')) {
+                                playAudio('click');
+                            }
+                            break;
+                        }
+                        target = target.parentElement;
+                    }
+                });
+            }
+
+            // FIXED: Proper state initialization with array validation
+            function loadState() {
+                const savedState = JSON.parse(localStorage.getItem('islamicQuizState'));
+                if (savedState) {
+                    gameState = savedState;
+                    // FIX: Ensure unlockedLevels is always an array
+                    if (!Array.isArray(gameState.unlockedLevels)) {
+                        console.warn('Fixing corrupted unlockedLevels data');
+                        gameState.unlockedLevels = [1];
+                    }
+                } else {
+                    gameState = { 
+                        score: 0, 
+                        coins: 100,  // Start with 100 coins for testing
+                        hearts: 10, 
+                        unlockedLevels: [1], 
+                        lockoutEndTime: null, 
+                        lockoutPoint: null 
+                    };
+                }
+                
+                // FIX: Initialize levelAccuracy if it doesn't exist
+                if (!extendedState.levelAccuracy) {
+                    extendedState.levelAccuracy = {};
+                }
+            }
+
+            function saveState() {
+                localStorage.setItem('islamicQuizState', JSON.stringify(gameState));
+                localStorage.setItem('islamicQuizExtendedState', JSON.stringify(extendedState));
+            }
+
+            function updateUI() {
+                displays.score.textContent = gameState.score;
+                displays.coins.textContent = gameState.coins;
+                displays.hearts.textContent = gameState.hearts;
+            }
+
+            function showScreen(screenName) {
+                for (const key in screens) {
+                    screens[key].classList.remove('active');
+                }
+                screens[screenName].classList.add('active');
+            }
+
+            // NEW: Function to create level accuracy progress bars
+            function createLevelAccuracyProgressBars() {
+                const container = document.getElementById('level-accuracy-container');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                // Create a progress bar for each level
+                for (let level = 1; level <= TOTAL_LEVELS; level++) {
+                    const accuracyData = extendedState.levelAccuracy[level] || { correct: 0, total: 0 };
+                    const percentage = accuracyData.total > 0 ? Math.round((accuracyData.correct / accuracyData.total) * 100) : 0;
+                    
+                    const progressContainer = document.createElement('div');
+                    progressContainer.className = 'level-accuracy-container';
+                    progressContainer.dataset.level = level;
+                    
+                    const label = document.createElement('div');
+                    label.className = 'level-accuracy-label';
+                    label.innerHTML = `
+                        <span>Level ${level}</span>
+                        <span>${percentage}%</span>
+                    `;
+                    
+                    const progressBar = document.createElement('div');
+                    progressBar.className = 'level-accuracy-bar';
+                    
+                    const progressFill = document.createElement('div');
+                    progressFill.className = 'level-accuracy-fill';
+                    progressFill.style.width = `${percentage}%`;
+                    
+                    // Set color based on percentage
+                    if (percentage >= 75) {
+                        progressFill.style.background = '#388e3c'; // Green
+                    } else if (percentage >= 30) {
+                        progressFill.style.background = '#f9a825'; // Yellow
+                    } else {
+                        progressFill.style.background = '#d32f2f'; // Red
+                    }
+                    
+                    progressBar.appendChild(progressFill);
+                    progressContainer.appendChild(label);
+                    progressContainer.appendChild(progressBar);
+                    container.appendChild(progressContainer);
+                }
+            }
+
+            // NEW: Function to update level accuracy
+            function updateLevelAccuracy(level, correct, total) {
+                if (!extendedState.levelAccuracy[level]) {
+                    extendedState.levelAccuracy[level] = { correct: 0, total: 0 };
+                }
+                
+                // Only update if the new score is higher than the previous one
+                const currentPercentage = extendedState.levelAccuracy[level].total > 0 ? 
+                    (extendedState.levelAccuracy[level].correct / extendedState.levelAccuracy[level].total) * 100 : 0;
+                const newPercentage = (correct / total) * 100;
+                
+                // Always update if playing for the first time or if new score is higher
+                if (extendedState.levelAccuracy[level].total === 0 || newPercentage > currentPercentage) {
+                    extendedState.levelAccuracy[level].correct = correct;
+                    extendedState.levelAccuracy[level].total = total;
+                    saveState();
+                }
+            }
+
+            // FIXED: Level buttons with proper array checking and accuracy display
+            function renderHomeScreen() {
+                // Clear existing level buttons
+                levelSelectionContainer.innerHTML = '';
+                
+                // Create level buttons
+                for (let i = 1; i <= TOTAL_LEVELS; i++) {
+                    const levelBtn = document.createElement('button');
+                    levelBtn.textContent = i;
+                    levelBtn.dataset.level = i;
+                    levelBtn.classList.add('level-btn');
+                    
+                    // FIX: Safe array checking for levelAccuracy
+                    const accuracyData = extendedState.levelAccuracy && extendedState.levelAccuracy[i] ? 
+                        extendedState.levelAccuracy[i] : { correct: 0, total: 0 };
+                    const percentage = accuracyData.total > 0 ? Math.round((accuracyData.correct / accuracyData.total) * 100) : 0;
+                    levelBtn.setAttribute('data-accuracy', percentage > 0 ? `${percentage}%` : '');
+                    
+                    // FIX: Safe array checking for unlocked levels
+                    const isUnlocked = Array.isArray(gameState.unlockedLevels) && gameState.unlockedLevels.includes(i);
+                    
+                    if (isUnlocked) {
+                        levelBtn.addEventListener('click', () => startLevel(i));
+                    } else {
+                        levelBtn.classList.add('locked');
+                    }
+                    levelSelectionContainer.appendChild(levelBtn);
+                }
+                
+                // Create additional UI elements
+                createGlobalProgressBar();
+                createStatsToggle();
+                createMainAccuracyProgressBar(); // Add main accuracy progress bar
+                createLevelAccuracyProgressBars(); // NEW: Add level accuracy progress bars
+                
+                showScreen('home');
+            }
+
+            function startLevel(level) {
+                // FIX: Safe array checking
+                if (!Array.isArray(gameState.unlockedLevels) || !gameState.unlockedLevels.includes(level)) {
+                    alert("Yeh level abhi locked hai. Pehle pichla level complete karein.");
+                    return;
+                }
+
+                if (gameState.hearts <= 0 && gameState.lockoutEndTime && Date.now() < gameState.lockoutEndTime) {
+                    showLockoutScreen();
+                    return;
+                }
+                
+                if (gameState.hearts <= 0) {
+                    gameState.hearts = 10;
+                }
+
+                gameState.lockoutPoint = null;
+                
+                currentLevel = level;
+                currentQuestionIndex = 0;
+                extendedState.currentStreak = 0;
+                levelTitle.textContent = `Level ${currentLevel}`;
+                
+                // Reset level progress bar
+                createLevelProgressBar();
+                updateLevelProgressBar(0, true);
+                
+                // Show timer input
+                createTimerInput();
+                
+                saveState();
+                showScreen('quiz');
+                
+                // Clear the question display until timer is started
+                questionText.textContent = 'Set your time and start the level';
+                optionsContainer.innerHTML = '';
+            }
+
+            function displayQuestion() {
+                // FIX: Check if we've reached the end of questions
+                if (currentQuestionIndex >= quizData[currentLevel].length) {
+                    finishLevel();
+                    return;
+                }
+
+                const question = quizData[currentLevel][currentQuestionIndex];
+                questionText.textContent = question.q;
+                optionsContainer.innerHTML = '';
+                
+                question.o.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.classList.add('option-btn');
+                    // NEW: Add data attribute to suppress global click sound
+                    button.setAttribute('data-suppress-global-click', 'true');
+                    button.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+                    button.addEventListener('click', () => selectAnswer(index, question.a, button));
+                    optionsContainer.appendChild(button);
+                });
+                
+                // Update progress bar
+                const progress = (currentQuestionIndex / quizData[currentLevel].length) * 100;
+                updateLevelProgressBar(progress, true);
+            }
+
+            function selectAnswer(selectedIndex, correctIndex, button) {
+                const allOptions = optionsContainer.querySelectorAll('.option-btn');
+                allOptions.forEach(btn => btn.disabled = true);
+
+                // Initialize level progress tracking
+                if (!extendedState.levelProgress[currentLevel]) {
+                    extendedState.levelProgress[currentLevel] = { correct: 0, total: 0 };
+                }
+                extendedState.levelProgress[currentLevel].total++;
+
+                if (selectedIndex === correctIndex) {
+                    button.classList.add('correct');
+                    
+                    // NEW FEATURE: No score increase on replay
+                    if (!extendedState.completedLevels.includes(currentLevel)) {
+                        gameState.score += 1;
+                    }
+                    
+                    extendedState.currentStreak++;
+                    extendedState.levelProgress[currentLevel].correct++;
+                    
+                    // FIXED: Play correct sound
+                    playAudio('correct');
+                    
+                    // Update progress bar with correct answer
+                    const progress = ((currentQuestionIndex + 1) / quizData[currentLevel].length) * 100;
+                    updateLevelProgressBar(progress, true);
+                    
+                    // Check for row reward
+                    checkRowReward();
+                } else {
+                    button.classList.add('wrong');
+                    allOptions[correctIndex].classList.add('correct');
+                    gameState.hearts -= 1;
+                    extendedState.currentStreak = 0;
+                    
+                    // Update progress bar with wrong answer (reset color to red)
+                    const progress = ((currentQuestionIndex + 1) / quizData[currentLevel].length) * 100;
+                    updateLevelProgressBar(progress, false);
+                    
+                    // FIXED: Play wrong sound
+                    playAudio('wrong');
+
+                    if (gameState.hearts <= 0) {
+                        gameState.hearts = 0;
+                        gameState.lockoutEndTime = Date.now() + 10 * 60 * 1000;
+                        gameState.lockoutPoint = { 
+                            level: currentLevel, 
+                            questionIndex: currentQuestionIndex,
+                            timeLeft: extendedState.currentTimeLeft // Save timer state
+                        };
+                        updateUI();
+                        saveState();
+                        setTimeout(() => {
+                            // FIXED: Play level failed sound when hearts finish
+                            playAudio('levelFailed');
+                            showLockoutScreen();
+                        }, 1500);
+                        return;
+                    }
+                }
+
+                updateUI();
+                saveState();
+
+                // FIX: Move to next question after delay
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    // FIX: Check if we've reached the end before displaying next question
+                    if (currentQuestionIndex >= quizData[currentLevel].length) {
+                        finishLevel();
+                    } else {
+                        displayQuestion();
+                    }
+                }, 1500);
+            }
+
+            function finishLevel() {
+                // FIX: Stop timer when level finishes
+                stopTimer();
+                
+                // NEW FEATURE: Reduce default coin reward to 30
+                const baseCoins = 30;
+                let totalCoins = baseCoins;
+                
+                // NEW FEATURE: Perfect level bonus
+                const perfectLevel = extendedState.levelProgress[currentLevel] && 
+                                   extendedState.levelProgress[currentLevel].correct === quizData[currentLevel].length;
+                
+                if (perfectLevel) {
+                    totalCoins += 20;
+                    extendedState.coinsEarned += 20;
+                }
+                
+                gameState.coins += totalCoins;
+                extendedState.coinsEarned += baseCoins;
+                
+                // Mark level as completed
+                if (!extendedState.completedLevels.includes(currentLevel)) {
+                    extendedState.completedLevels.push(currentLevel);
+                }
+                
+                // NEW: Update level accuracy
+                const levelProgress = extendedState.levelProgress[currentLevel] || { correct: 0, total: 0 };
+                updateLevelAccuracy(currentLevel, levelProgress.correct, levelProgress.total);
+                
+                // FIX: Proper level unlocking with array validation
+                const nextLevel = currentLevel + 1;
+                if (nextLevel <= TOTAL_LEVELS) {
+                    // Ensure unlockedLevels is an array
+                    if (!Array.isArray(gameState.unlockedLevels)) {
+                        gameState.unlockedLevels = [1];
+                    }
+                    
+                    if (!gameState.unlockedLevels.includes(nextLevel)) {
+                        gameState.unlockedLevels.push(nextLevel);
+                        console.log(`Unlocked level ${nextLevel}`);
+                    }
+                }
+                
+                gameState.lockoutPoint = null;
+                
+                // NEW FEATURE: Play different sound for all levels completion
+                if (currentLevel === TOTAL_LEVELS) {
+                    // FIXED: Play all complete sound
+                    playAudio('allComplete');
+                    completeTitle.textContent = "Masha'Allah! Quiz Pura Hua!";
+                    completeMessage.textContent = "Aapne saare 10 levels kamyabi se pure kar liye hain. JazakAllah Khaira!";
+                    buttons.nextLevel.style.display = 'none';
+                } else {
+                    // FIXED: Play level complete sound
+                    playAudio('levelComplete');
+                    completeTitle.textContent = "Mubarak Ho!";
+                    let message = `Aapne Level ${currentLevel} complete kar liya hai. Aapko ${totalCoins} coins mile hain!`;
+                    if (perfectLevel) {
+                        message += " (Perfect level bonus +20 coins!)";
+                    }
+                    completeMessage.textContent = message;
+                    buttons.nextLevel.style.display = 'inline-block';
+                }
+                
+                saveState();
+                updateUI();
+                updateGlobalProgress();
+                updateMainAccuracyProgress(); // Update main accuracy progress
+                showScreen('complete');
+            }
+
+            function showLockoutScreen() {
+                stopTimer();
+                showScreen('lockout');
+                if (lockoutInterval) clearInterval(lockoutInterval);
+
+                const updateTimer = () => {
+                    const timeLeft = gameState.lockoutEndTime - Date.now();
+                    if (timeLeft <= 0) {
+                        clearInterval(lockoutInterval);
+                        countdownTimer.textContent = "Unlocked!";
+                        gameState.hearts = 10;
+                        gameState.lockoutPoint = null;
+                        saveState();
+                        updateUI();
+                        setTimeout(() => renderHomeScreen(), 2000);
+                        return;
+                    }
+                    const minutes = Math.floor(timeLeft / 60000);
+                    const seconds = Math.floor((timeLeft % 60000) / 1000);
+                    countdownTimer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                };
+                updateTimer();
+                lockoutInterval = setInterval(updateTimer, 1000);
+            }
+
+            // FIX: Countdown resuming after game continue
+            function payToUnlock() {
+                if (gameState.coins >= 50) {
+                    gameState.coins -= 50;
+                    extendedState.coinsUsed += 50;
+                    gameState.hearts = 10;
+                    gameState.lockoutEndTime = null;
+                    if (lockoutInterval) clearInterval(lockoutInterval);
+                    
+                    if (gameState.lockoutPoint) {
+                        currentLevel = gameState.lockoutPoint.level;
+                        currentQuestionIndex = gameState.lockoutPoint.questionIndex;
+                        
+                        // Restore the timer state if it was saved
+                        if (gameState.lockoutPoint.timeLeft) {
+                            extendedState.currentTimeLeft = gameState.lockoutPoint.timeLeft;
+                        }
+                        
+                        gameState.lockoutPoint = null;
+                        
+                        saveState();
+                        updateUI();
+                        
+                        levelTitle.textContent = `Level ${currentLevel}`;
+                        createLevelProgressBar();
+                        const progress = (currentQuestionIndex / quizData[currentLevel].length) * 100;
+                        updateLevelProgressBar(progress, true);
+                        
+                        // FIX: Restart the countdown timer when resuming
+                        if (extendedState.currentTimeLeft > 0) {
+                            createQuizCountdown();
+                            startLevelTimer(extendedState.currentTimeLeft / 60);
+                        }
+                        
+                        showScreen('quiz');
+                        displayQuestion();
+                    } else {
+                        saveState();
+                        updateUI();
+                        renderHomeScreen();
+                    }
+                } else {
+                    alert("Afsos! Aapke paas kaafi coins nahi hain.");
+                }
+            }
+            
+            // Timer functions
+            function startLevelTimer(minutes) {
+                if (extendedState.currentTimer) {
+                    clearInterval(extendedState.currentTimer);
+                }
+                
+                extendedState.currentTimeLeft = minutes * 60;
+                updateTimerDisplay();
+                updateQuizCountdown();
+                
+                extendedState.currentTimer = setInterval(() => {
+                    extendedState.currentTimeLeft--;
+                    updateTimerDisplay();
+                    updateQuizCountdown();
+                    
+                    if (extendedState.currentTimeLeft <= 0) {
+                        clearInterval(extendedState.currentTimer);
+                        // FIXED: Play level failed sound when time finishes
+                        playAudio('levelFailed');
+                        showScreen('home');
+                        renderHomeScreen();
+                    }
+                }, 1000);
+            }
+
+            function createLevelProgressBar() {
+                const container = document.getElementById('level-progress-bar');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                const progressBar = document.createElement('div');
+                progressBar.className = 'progress-bar';
+                
+                const progressFill = document.createElement('div');
+                progressFill.id = 'level-progress-fill';
+                progressFill.className = 'progress-fill';
+                
+                progressBar.appendChild(progressFill);
+                container.appendChild(progressBar);
+            }
+
+            function updateLevelProgressBar(progress, isCorrect) {
+                const progressFill = document.getElementById('level-progress-fill');
+                if (progressFill) {
+                    progressFill.style.width = `${progress}%`;
+                    
+                    if (isCorrect) {
+                        const red = Math.max(0, 255 - (progress * 2.55));
+                        const green = Math.min(255, progress * 2.55);
+                        progressFill.style.background = `rgb(${red}, ${green}, 0)`;
+                    } else {
+                        progressFill.style.background = '#d32f2f';
+                    }
+                }
+            }
+
+            function createTimerInput() {
+                const container = document.getElementById('level-timer-container');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                const timeContainer = document.createElement('div');
+                timeContainer.style.cssText = `
+                    text-align: center;
+                    margin: 15px 0;
+                `;
+                
+                const timeLabel = document.createElement('label');
+                timeLabel.textContent = 'Set time (minutes): ';
+                timeLabel.style.cssText = `
+                    font-weight: bold;
+                    color: var(--primary-color);
+                    margin-right: 10px;
+                `;
+                
+                const timeInput = document.createElement('input');
+                timeInput.type = 'number';
+                timeInput.min = '1';
+                timeInput.max = '60';
+                timeInput.value = extendedState.levelTimes[currentLevel] || '5';
+                timeInput.style.cssText = `
+                    padding: 8px;
+                    border: 2px solid var(--primary-color);
+                    border-radius: 5px;
+                    width: 80px;
+                    text-align: center;
+                    font-size: 1rem;
+                    margin-right: 10px;
+                `;
+                
+                const timerDisplay = document.createElement('div');
+                timerDisplay.id = 'level-timer-display';
+                timerDisplay.style.cssText = `
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    color: var(--danger-color);
+                    margin: 10px 0;
+                    padding: 10px;
+                    background: #ffebee;
+                    border-radius: 8px;
+                    display: none;
+                `;
+                
+                const startButton = document.createElement('button');
+                startButton.textContent = 'Start Level';
+                startButton.className = 'btn btn-primary';
+                startButton.style.marginTop = '10px';
+                
+                startButton.addEventListener('click', () => {
+                    const userTime = parseInt(timeInput.value) || 5;
+                    extendedState.levelTimes[currentLevel] = userTime;
+                    startLevelTimer(userTime);
+                    timeContainer.style.display = 'none';
+                    timerDisplay.style.display = 'block';
+                    createQuizCountdown();
+                    displayQuestion();
+                });
+                
+                timeContainer.appendChild(timeLabel);
+                timeContainer.appendChild(timeInput);
+                timeContainer.appendChild(startButton);
+                timeContainer.appendChild(timerDisplay);
+                container.appendChild(timeContainer);
+            }
+
+            function createQuizCountdown() {
+                const container = document.getElementById('quiz-countdown-container');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                const countdownDisplay = document.createElement('div');
+                countdownDisplay.id = 'quiz-countdown';
+                countdownDisplay.className = 'quiz-countdown';
+                countdownDisplay.textContent = 'Time: 00:00';
+                countdownDisplay.style.cssText = `
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                `;
+                
+                container.appendChild(countdownDisplay);
+            }
+
+            function updateQuizCountdown() {
+                const countdownDisplay = document.getElementById('quiz-countdown');
+                if (countdownDisplay && extendedState.currentTimeLeft > 0) {
+                    const minutes = Math.floor(extendedState.currentTimeLeft / 60);
+                    const seconds = extendedState.currentTimeLeft % 60;
+                    countdownDisplay.textContent = `Time: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                    
+                    // Color coding for urgency
+                    if (extendedState.currentTimeLeft <= 30) {
+                        countdownDisplay.style.color = '#d32f2f';
+                        countdownDisplay.style.background = '#ffcdd2';
+                    } else if (extendedState.currentTimeLeft <= 60) {
+                        countdownDisplay.style.color = '#f57c00';
+                        countdownDisplay.style.background = '#ffe0b2';
+                    } else {
+                        countdownDisplay.style.color = 'var(--danger-color)';
+                        countdownDisplay.style.background = '#ffebee';
+                    }
+                }
+            }
+
+            function updateTimerDisplay() {
+                const timerDisplay = document.getElementById('level-timer-display');
+                if (timerDisplay) {
+                    const minutes = Math.floor(extendedState.currentTimeLeft / 60);
+                    const seconds = extendedState.currentTimeLeft % 60;
+                    timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                }
+            }
+
+            function stopTimer() {
+                if (extendedState.currentTimer) {
+                    clearInterval(extendedState.currentTimer);
+                    extendedState.currentTimer = null;
+                }
+            }
+
+            function checkRowReward() {
+                if (extendedState.currentStreak % 5 === 0 && extendedState.currentStreak > 0) {
+                    showRewardMessage(`Wow! ${extendedState.currentStreak} questions in a row!`);
+                    gameState.coins += 10;
+                    extendedState.coinsEarned += 10;
+                    updateUI();
+                }
+                
+                if (extendedState.currentStreak > extendedState.highestStreak) {
+                    extendedState.highestStreak = extendedState.currentStreak;
+                }
+            }
+
+            function showRewardMessage(message) {
+                const rewardDiv = document.createElement('div');
+                rewardDiv.textContent = message;
+                rewardDiv.className = 'reward-message';
+                
+                document.body.appendChild(rewardDiv);
+                
+                setTimeout(() => {
+                    rewardDiv.remove();
+                }, 3000);
+            }
+
+            // Other UI functions (createGlobalProgressBar, createStatsToggle, etc.) remain the same
+            function createGlobalProgressBar() {
+                const container = document.getElementById('global-progress-container');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                const progressContainer = document.createElement('div');
+                progressContainer.style.cssText = `
+                    margin: 15px 0;
+                    background: #f5f5f5;
+                    border-radius: 10px;
+                    padding: 10px;
+                `;
+                
+                const label = document.createElement('div');
+                label.textContent = 'Overall Progress';
+                label.style.cssText = `
+                    text-align: center;
+                    font-weight: bold;
+                    margin-bottom: 8px;
+                    color: var(--primary-color);
+                `;
+                
+                const progressBar = document.createElement('div');
+                progressBar.className = 'progress-bar';
+                
+                const progressFill = document.createElement('div');
+                progressFill.id = 'global-progress-fill';
+                progressFill.className = 'progress-fill';
+                
+                progressBar.appendChild(progressFill);
+                progressContainer.appendChild(label);
+                progressContainer.appendChild(progressBar);
+                container.appendChild(progressContainer);
+                
+                updateGlobalProgress();
+            }
+
+            function updateGlobalProgress() {
+                let totalQuestions = 0;
+                let correctAnswers = 0;
+                
+                Object.keys(quizData).forEach(level => {
+                    const levelNum = parseInt(level);
+                    const progress = extendedState.levelProgress[levelNum] || { correct: 0, total: 0 };
+                    correctAnswers += progress.correct || 0;
+                    totalQuestions += progress.total || 0;
+                });
+                
+                const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+                const progressFill = document.getElementById('global-progress-fill');
+                
+                if (progressFill) {
+                    progressFill.style.width = `${percentage}%`;
+                    
+                    if (percentage >= 100) {
+                        progressFill.style.background = '#388e3c';
+                    } else if (percentage >= 75) {
+                        progressFill.style.background = '#f9a825';
+                    } else if (percentage >= 30) {
+                        progressFill.style.background = '#ff9800';
+                    } else {
+                        progressFill.style.background = '#d32f2f';
+                    }
+                }
+            }
+
+            function createStatsToggle() {
+                const container = document.getElementById('stats-container');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                const toggleButton = document.createElement('button');
+                toggleButton.id = 'stats-toggle-btn';
+                toggleButton.textContent = '📊 Show Stats';
+                
+                const statsContent = document.createElement('div');
+                statsContent.id = 'stats-content';
+                statsContent.style.display = 'none';
+                
+                // NEW: Get level accuracy container
+                const levelAccuracyContainer = document.getElementById('level-accuracy-container');
+                
+                toggleButton.addEventListener('click', () => {
+                    extendedState.showStats = !extendedState.showStats;
+                    statsContent.style.display = extendedState.showStats ? 'block' : 'none';
+                    
+                    // NEW: Toggle level accuracy container visibility
+                    if (levelAccuracyContainer) {
+                        levelAccuracyContainer.style.display = extendedState.showStats ? 'block' : 'none';
+                    }
+                    
+                    toggleButton.textContent = extendedState.showStats ? '📊 Hide Stats' : '📊 Show Stats';
+                    updateStatsDisplay();
+                });
+                
+                container.appendChild(toggleButton);
+                container.appendChild(statsContent);
+                updateStatsDisplay();
+            }
+
+            function updateStatsDisplay() {
+                const statsContent = document.getElementById('stats-content');
+                if (statsContent) {
+                    statsContent.innerHTML = `
+                        <strong>Coins Earned:</strong> ${extendedState.coinsEarned}<br>
+                        <strong>Coins Used:</strong> ${extendedState.coinsUsed}<br>
+                        <strong>Highest Streak:</strong> ${extendedState.highestStreak} correct answers
+                    `;
+                }
+            }
+
+            function createMainAccuracyProgressBar() {
+                const homeScreen = document.getElementById('home-screen');
+                const existingMainProgress = document.getElementById('main-accuracy-progress');
+                
+                // Remove existing one if present
+                if (existingMainProgress) {
+                    existingMainProgress.remove();
+                }
+                
+                const mainProgressContainer = document.createElement('div');
+                mainProgressContainer.id = 'main-accuracy-progress';
+                
+                const label = document.createElement('div');
+                label.id = 'main-accuracy-label';
+                label.textContent = 'Overall Accuracy';
+                
+                const progressBar = document.createElement('div');
+                progressBar.id = 'main-accuracy-bar';
+                
+                const progressFill = document.createElement('div');
+                progressFill.id = 'main-accuracy-fill';
+                
+                const percentageDisplay = document.createElement('div');
+                percentageDisplay.id = 'main-accuracy-percentage';
+                percentageDisplay.textContent = '0%';
+                
+                progressBar.appendChild(progressFill);
+                mainProgressContainer.appendChild(label);
+                mainProgressContainer.appendChild(progressBar);
+                mainProgressContainer.appendChild(percentageDisplay);
+                
+                // Insert after the stats container or before level selection
+                const levelSelection = document.getElementById('level-selection');
+                homeScreen.insertBefore(mainProgressContainer, levelSelection);
+                
+                updateMainAccuracyProgress();
+            }
+
+            function updateMainAccuracyProgress() {
+                let totalQuestions = 0;
+                let correctAnswers = 0;
+                
+                // Calculate overall accuracy across all levels
+                Object.keys(quizData).forEach(level => {
+                    const levelNum = parseInt(level);
+                    const progress = extendedState.levelProgress[levelNum] || { correct: 0, total: 0 };
+                    correctAnswers += progress.correct || 0;
+                    totalQuestions += progress.total || 0;
+                });
+                
+                const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+                const progressFill = document.getElementById('main-accuracy-fill');
+                const percentageDisplay = document.getElementById('main-accuracy-percentage');
+                
+                if (progressFill && percentageDisplay) {
+                    progressFill.style.width = `${percentage}%`;
+                    percentageDisplay.textContent = `${percentage}%`;
+                    
+                    // Set color based on percentage
+                    if (percentage >= 75) {
+                        progressFill.style.background = '#388e3c'; // Green
+                    } else if (percentage >= 30) {
+                        progressFill.style.background = '#f9a825'; // Yellow
+                    } else {
+                        progressFill.style.background = '#d32f2f'; // Red
+                    }
+                }
+            }
+            
+            // --- 4. Event Listeners ---
+            buttons.nextLevel.addEventListener('click', () => {
+                startLevel(currentLevel + 1);
+            });
+            buttons.homeFromComplete.addEventListener('click', renderHomeScreen);
+            buttons.homeFromLockout.addEventListener('click', renderHomeScreen);
+            buttons.unlockWithCoins.addEventListener('click', payToUnlock);
+
+            // --- 5. Initialisation ---
+            function init() {
+                loadState();
+                updateUI();
+                renderHomeScreen();
+                createMainAccuracyProgressBar(); // Initialize main accuracy progress bar
+                preloadAudio(); // Preload audio files
+                setupGlobalClickSound(); // NEW: Setup global click sound
+            }
+
+            init();
+        });
+    </script>
+</body>
+</html>

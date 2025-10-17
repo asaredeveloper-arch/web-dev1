@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>www.Rabbanisamdani.com/contact</title>
+    <link rel="stylesheet" href="contact.css">
+</head>
+<body>
+
+    <nav>
+        <a href="Homepage.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="team.html">Team</a>
+        <a href="contact.html">Contact</a>
+        <a href="about.html">About us</a>
+    </nav>
+    
+    <!-- Hero / Introduction -->
+    <header class="contact-hero">
+        <h1>Get in Touch</h1>
+        <p>We’d love to hear from you. Whether it’s a project idea, a question, or feedback, drop us a line and we’ll respond promptly.</p>
+    </header>
+
+    <!-- Contact Form -->
+    <!-- Contact Form (updated: buttons moved below form; email suggestions via datalist) -->
+<section class="contact-form-section">
+    <!-- LEFT: form (same fields) -->
+    <form action="9354847763" method="post" class="contact-form">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required autocomplete="name" placeholder="Your name">
+
+        <label for="email">Email</label>
+        <!-- datalist provides suggestion options; browser may also show saved autofill -->
+        <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@example.xyz">
+
+        <label for="subject">Subject (Optional)</label>
+        <input type="text" id="subject" name="subject" placeholder="Project subject">
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required placeholder="Tell us about your project"></textarea>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- RIGHT column replaced by nothing — we moved quick-actions under the form
+         If layout is 1-column on mobile the contact-buttons will be horizontal (CSS handles it)
+    -->
+
+    <!-- --- MOVED Quick Action Buttons: placed BELOW the form (same visual classes kept) --- -->
+    
+</section>
+
+<!-- OPTIONAL: Floating actions (add this near end of <body> so it overlays) -->
+<div class="floating-actions" aria-hidden="false">
+  <a href="tel:+919229373541" class="floating-call" aria-label="Call">📞</a>
+  <a href="https://wa.me/919229373541" class="floating-wa" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+  <a href="sms:+919229373541?body=Hi%20ASARE" class="floating-sms" aria-label="SMS">✉️</a>
+</div>
+
+
+        <!-- Quick Action Buttons -->
+        <div class="contact-buttons">
+            <a href="tel:+919229373541" class="btn-call">📞Call Me</a>
+            <a href="sms:+919229373541?body=Hello%20ASARE" class="btn-sms">✉️SMS Me</a>
+            <a href="https://wa.me/919229373541?text=Hello%20ASARE" target="_blank" class="btn-whatsapp">💬WhatsApp</a>
+            <a href="mailto:asaredeveloper@gmail.com?subject=Hello%20ASARE" class="btn-email">📧Email Me</a>
+        </div>
+    </section>
+
+    <!-- Contact Information -->
+    <section class="contact-info">
+        <h2>Contact Information</h2>
+        <p>Phone: +91 9229373541</p>
+        <p>Email: asaredeveloper@gmail.com</p>
+        <p>Address: Badli, Delhi, India</p>
+        <p>Follow us: 
+            <a href="www.linkedin.com">LinkedIn</a>, 
+            <a href="www.x.com">Twitter</a>, 
+            <a href="www.instagram.com">Instagram</a>
+        </p>
+    </section>
+
+    <!-- Map (Optional) -->
+    <section class="contact-map">
+        <h2>Our Location</h2>
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m25!1m12!1m3!1d840.4547625494971!2d77.14369296958607!3d28.735131398475566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m10!3e6!4m3!3m2!1d28.7351368!2d77.14431189999999!4m4!2s28.735144851599248%2C%2077.14432418085366!3m2!1d28.735144899999998!2d77.1443242!5e1!3m2!1sen!2sin!4v1759316968096!5m2!1sen!2sin"
+            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </section>
+
+    <!-- FAQ / Quick Help -->
+    <section class="contact-faq">
+        <h2>Quick Help</h2>
+        <details>
+            <summary>What response time can I expect?</summary>
+            <p>We usually respond within 24 hours on business days.</p>
+        </details>
+        <details>
+            <summary>Do you handle international clients?</summary>
+            <p>Yes, we work with clients worldwide.</p>
+        </details>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="contact-cta">
+        <h2>Ready to start your project? Let’s connect!</h2>
+        <div class="cta-buttons">
+            <a href="contact.html" class="btn-contact">Contact Us Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>From thought to screen, ASARE builds what you imagine.</p>
+        <p>Phone: +91 9229373541 | Email: asaredeveloper@gmail.com | <a href="Homepage.html">Home</a> | <a href="services.html">Services</a></p>
+    </footer>
+
+</body>
+</html>
